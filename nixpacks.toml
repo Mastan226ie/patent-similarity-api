@@ -1,5 +1,5 @@
 ﻿[phases.setup]
-cmds = ["python download_files.py"]
+cmds = []
 
 [phases.build]
 dependsOn = ["setup"]
