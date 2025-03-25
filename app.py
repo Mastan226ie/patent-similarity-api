@@ -18,7 +18,7 @@ import os
 import requests
 
 embeddings = np.load("embeddings.npy")
-index = faiss.read_index("patent_index.faiss")
+
 patents_df = pd.read_csv("patents.csv")
 preprocessed_patents_df = pd.read_csv("preprocessed_patents.csv")
 
@@ -49,18 +49,18 @@ print(f"Loaded FAISS index with {index.ntotal} vectors")
 print(f"Loaded patents DataFrame with {len(patents_df)} rows")
 print(f"Loaded preprocessed patents DataFrame with {len(preprocessed_patents_df)} rows")
 
-nltk.download('punkt', quiet=True)
-nltk.download('stopwords', quiet=True)
+# nltk.download('punkt', quiet=True)
+# nltk.download('stopwords', quiet=True)
 
 app = FastAPI(title="Patent Similarity API", description="API for patent similarity, plagiarism detection, and watermarking")
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
-index = faiss.read_index('patent_index.faiss')
 embeddings = np.load('embeddings.npy')
-df = pd.read_csv('preprocessed_patents.csv')
 
 @app.post("/find_similar", response_model=dict)
 async def find_similar(text: str = Form(...)):
+    index = faiss.read_index("patent_index.faiss")
+    df = pd.read_csv('preprocessed_patents.csv')
     query_embedding = model.encode([text])[0]
     k = 5
     distances, indices = index.search(query_embedding.reshape(1, -1), k)

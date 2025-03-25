@@ -1,5 +1,5 @@
 ﻿[phases.setup]
-cmds = []
+cmds = ["pip install nltk", "python download_files.py"]
 
 [phases.build]
 dependsOn = ["setup"]
