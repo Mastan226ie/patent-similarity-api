@@ -14,10 +14,33 @@ import nltk
 from nltk.corpus import stopwords
 import string
 import uvicorn
-import nest_asyncio
-import asyncio
+import os
+import requests
 
-nest_asyncio.apply()
+def download_file(url, filename):
+    if not os.path.exists(filename):
+        print(f"Downloading {filename}...")
+        response = requests.get(url)
+        with open(filename, 'wb') as f:
+            f.write(response.content)
+        print(f"Downloaded {filename}")
+# Download large files at startup
+download_file("https://drive.google.com/uc?export=download&id=1FF0Lx3rmop54LJiRvsfUVkPODROEIVXU", "embeddings.npy")
+download_file("https://drive.google.com/uc?export=download&id=1yk-LHEV6-Z8o1zmLKBIxYZns6K9_LuR8", "patent_index.faiss")
+download_file("https://drive.google.com/uc?export=download&id=19rOOm_zqC4ZNejKhO1sWMoSu1V_Krce2", "patents.csv")
+download_file("https://drive.google.com/uc?export=download&id=1UuI1M0OtaU9JXSE9wBtl3_Ae4jOsHMOB", "preprocessed_patents.csv")
+
+
+embeddings = np.load("embeddings.npy")
+index = faiss.read_index("patent_index.faiss")
+patents_df = pd.read_csv("patents.csv")
+preprocessed_patents_df = pd.read_csv("preprocessed_patents.csv")
+
+# Example: Print to verify loading
+print(f"Loaded embeddings with shape: {embeddings.shape}")
+print(f"Loaded FAISS index with {index.ntotal} vectors")
+print(f"Loaded patents DataFrame with {len(patents_df)} rows")
+print(f"Loaded preprocessed patents DataFrame with {len(preprocessed_patents_df)} rows")
 
 nltk.download('punkt', quiet=True)
 nltk.download('stopwords', quiet=True)
