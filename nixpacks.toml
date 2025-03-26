@@ -1,5 +1,11 @@
 ﻿[phases.setup]
-cmds = ["pip install nltk", "python download_files.py"]
+cmds = [
+  "pip install -r requirements.txt",
+  "python download_files.py"
+]
 
 [phases.build]
 dependsOn = ["setup"]
+
+[start]
+cmd = "uvicorn app:app --host 0.0.0.0 --port $PORT"
